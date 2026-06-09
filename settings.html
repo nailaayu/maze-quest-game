@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>3D Maze Quest</title>
+    <style>
+        :root {
+            --gold: #ffd166;
+            --blue: #38bdf8;
+            --glass: rgba(6, 14, 28, 0.75);
+            --line: rgba(255, 255, 255, 0.18);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { min-height: 100%; font-family: Inter, system-ui, Segoe UI, Arial, sans-serif; color: #fff; }
+        body { 
+            background: #06111f url('assets/images/background.jpg') center/cover fixed; 
+            display: grid; 
+            place-items: center; 
+            overflow: hidden; 
+        }
+        body:before {
+            content: ''; position: fixed; inset: 0; 
+            background: radial-gradient(circle at 50% 35%, rgba(56, 189, 248, 0.12), rgba(0,0,0,0.78) 72%), linear-gradient(120deg, rgba(2,6,23,.35), rgba(0,0,0,.45)); 
+            z-index: -1;
+        }
+        .panel { 
+            width: min(92vw, 440px); 
+            padding: 40px 30px; 
+            border: 1px solid var(--line); 
+            border-radius: 24px; 
+            background: var(--glass); 
+            backdrop-filter: blur(14px); 
+            box-shadow: 0 25px 70px rgba(0,0,0,0.6); 
+        }
+        .title { 
+            margin: 0 0 15px; 
+            text-align: center; 
+            font-size: 32px; 
+            font-weight: 1000; 
+            letter-spacing: 2px; 
+            text-shadow: 0 0 28px rgba(56, 189, 248, .9); 
+        }
+        .sub { text-align: center; color: #dbeafe; margin: 0 0 24px; font-size: 14px; }
+        
+        .setting-row {
+            background: rgba(255, 255, 255, 0.04);
+            padding: 15px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 20px;
+        }
+        .setting-row label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            font-size: 15px;
+        }
+        .range { 
+            width: 100%; 
+            height: 6px; 
+            background: rgba(255, 255, 255, 0.2); 
+            border-radius: 5px; 
+            outline: none; 
+            -webkit-appearance: none; 
+            cursor: pointer; 
+        }
+        .range::-webkit-slider-thumb { 
+            -webkit-appearance: none; 
+            width: 16px; 
+            height: 16px; 
+            border-radius: 50%; 
+            background: var(--blue); 
+            box-shadow: 0 0 8px var(--blue); 
+        }
+        
+        .btn { 
+            display: block; 
+            width: 100%; 
+            padding: 15px 20px; 
+            border: 0; 
+            border-radius: 14px; 
+            background: linear-gradient(135deg, #0ea5e9, #2563eb); 
+            color: white; 
+            font-size: 16px; 
+            font-weight: 900; 
+            letter-spacing: 1px; 
+            cursor: pointer; 
+            box-shadow: 0 12px 30px rgba(0,0,0,.35); 
+            transition: .18s; 
+            text-align: center;
+        }
+        .btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
+    </style>
+</head>
+<body>
+
+<main class="panel">
+    <h1 class="title">SETTINGS</h1>
+    <p class="sub">Atur volume suara game kamu</p>
+    
+    <div class="setting-row">
+        <label>Volume: <b id="vtxt">75%</b></label>
+        <input id="vol" class="range" type="range" min="0" max="1" step="0.01">
+    </div>
+    
+    <button class="btn" onclick="clickGo('menu.html')">SAVE & BACK</button>
+</main>
+
+<audio id="bgm" loop preload="auto" src="assets/audio/backgroundmusic.mp3"></audio>
+<audio id="click" preload="auto" src="assets/audio/kliktombol.mp3"></audio>
+
+<script>
+const VOLUME_KEY='mazeVolume';
+function getVol(){return parseFloat(localStorage.getItem(VOLUME_KEY)||"0.75");}
+
+function setupAudio(){
+    const bg=document.getElementById('bgm'); 
+    const click=document.getElementById('click');
+    
+    bg.volume = getVol();
+    click.volume = getVol();
+
+    const startMusic = () => {
+        if(bg) bg.play().catch(() => {});
+        document.removeEventListener("pointerdown", startMusic);
+        document.removeEventListener("keydown", startMusic);
+    };
+    document.addEventListener("pointerdown", startMusic);
+    document.addEventListener("keydown", startMusic);
+}
+
+function clickGo(url){
+    const c=document.getElementById('click'); 
+    if (c){ c.volume = getVol(); c.currentTime = 0; c.play().catch(() => {}); } 
+    setTimeout(()=>location.href=url,130)
+}
+window.addEventListener('DOMContentLoaded',setupAudio);
+
+const vol=document.getElementById('vol'),vtxt=document.getElementById('vtxt');
+vol.value=localStorage.getItem(VOLUME_KEY)||'0.75';
+
+function upd(){
+    localStorage.setItem(VOLUME_KEY,vol.value);
+    vtxt.textContent=Math.round(vol.value*100)+'%';
+    setupAudio();
+}
+vol.oninput=upd;
+upd();
+</script>
+</body>
+</html>

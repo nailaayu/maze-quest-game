@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pilih Level</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    width:100%;
+    min-height:100vh;
+    overflow:hidden;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:white;
+    background:#06111f;
+}
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:-5;
+    background-image:url("assets/images/background.jpg");
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+    filter:brightness(.82) contrast(1.08) saturate(1.05);
+}
+
+body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:-4;
+    background:linear-gradient(rgba(0,0,0,.15), rgba(0,0,0,.42));
+}
+
+.blink{
+    position:fixed;
+    width:280px;
+    height:280px;
+    border-radius:50%;
+    filter:blur(70px);
+    opacity:0;
+    pointer-events:none;
+    z-index:-2;
+}
+
+.blink1{
+    top:10%;
+    left:10%;
+    background:rgba(56,189,248,.55);
+    animation:blinkMove 4s infinite;
+}
+
+.blink2{
+    right:10%;
+    bottom:10%;
+    background:rgba(37,99,235,.50);
+    animation:blinkMove 4s infinite 1.5s;
+}
+
+.blink3{
+    left:45%;
+    bottom:18%;
+    background:rgba(255,255,255,.18);
+    animation:blinkMove 4s infinite 3s;
+}
+
+.wrapper{
+    width:90%;
+    max-width:440px;
+    text-align:center;
+    padding:40px 30px;
+    border:1px solid rgba(255, 255, 255, 0.18);
+    border-radius:24px;
+    background:rgba(6, 14, 28, 0.75);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    box-shadow:0 25px 70px rgba(0,0,0,0.6);
+}
+
+.title{
+    font-size:32px;
+    font-weight:900;
+    letter-spacing:2px;
+    margin-bottom:26px;
+    text-transform:uppercase;
+    text-shadow:
+    0 0 10px rgba(255,255,255,.9),
+    0 0 25px rgba(56,189,248,.9),
+    0 0 45px rgba(37,99,235,.7);
+    animation:titleBlink 1.8s ease-in-out infinite;
+}
+
+.grid{
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    margin:0 auto 22px;
+}
+
+.card{
+    height:70px;
+    border:2px solid rgba(255,255,255,.20);
+    border-radius:16px;
+    background:linear-gradient(135deg, rgba(71,85,105,.4), rgba(30,41,59,.6));
+    cursor:pointer;
+    transition:.2s ease;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.card h2{
+    font-size:22px;
+    font-weight:900;
+    text-shadow:0 0 12px rgba(0,0,0,.75);
+}
+
+.card:hover,
+.card.selected{
+    border-color:#ffd166;
+    box-shadow:0 0 20px rgba(255,209,102,.4);
+    transform:translateY(-2px);
+}
+
+.row{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:14px;
+    width:100%;
+}
+
+.btn{
+    flex:1;
+    padding:13px;
+    border:none;
+    border-radius:16px;
+    cursor:pointer;
+    background:linear-gradient(135deg, #38bdf8, #2563eb);
+    color:white;
+    font-size:16px;
+    font-weight:900;
+    letter-spacing:1px;
+    box-shadow:0 8px 20px rgba(0,0,0,.3);
+    transition:.2s ease;
+}
+
+.btn.ghost{
+    background:rgba(255,255,255,.1);
+    border:1px solid rgba(255,255,255,.22);
+}
+
+.btn:hover{
+    transform:translateY(-2px);
+    filter:brightness(1.15);
+}
+
+@keyframes blinkMove{
+    0%{ opacity:0; transform:scale(.8); }
+    50%{ opacity:1; transform:scale(1.2); }
+    100%{ opacity:0; transform:scale(.8); }
+}
+
+@keyframes titleBlink{
+    0%,100%{ opacity:1; filter:brightness(1); }
+    50%{ opacity:.85; filter:brightness(1.25); }
+}
+</style>
+</head>
+
+<body>
+
+<div class="blink blink1"></div>
+<div class="blink blink2"></div>
+<div class="blink blink3"></div>
+
+<main class="wrapper">
+    <h1 class="title">PILIH LEVEL</h1>
+    <div class="grid">
+        <div class="card" data-d="mudah">
+            <h2>Mudah</h2>
+        </div>
+        <div class="card" data-d="menengah">
+            <h2>Menengah</h2>
+        </div>
+        <div class="card" data-d="susah">
+            <h2>Susah</h2>
+        </div>
+    </div>
+    <div class="row">
+        <button class="btn ghost" onclick="clickGo('menu.html')">BACK</button>
+        <button class="btn" onclick="clickGo('game.html')">START</button>
+    </div>
+</main>
+
+<audio id="bgm" loop preload="auto" src="assets/audio/backgroundmusic.mp3"></audio>
+<audio id="click" preload="auto" src="assets/audio/kliktombol.mp3"></audio>
+
+<script>
+const VOLUME_KEY = "mazeVolume";
+
+function getVolume(){
+    return parseFloat(localStorage.getItem(VOLUME_KEY) || "0.75");
+}
+
+function setupAudio(){
+    const bgm = document.getElementById("bgm");
+    const click = document.getElementById("click");
+
+    bgm.volume = getVolume();
+    click.volume = getVolume();
+
+    const forcePlay = () => {
+        bgm.play().catch(() => {});
+        document.removeEventListener("pointerdown", forcePlay);
+        document.removeEventListener("keydown", forcePlay);
+    };
+    document.addEventListener("pointerdown", forcePlay);
+    document.addEventListener("keydown", forcePlay);
+}
+
+function clickGo(url){
+    const click = document.getElementById("click");
+    click.volume = getVolume();
+    click.currentTime = 0;
+    click.play().catch(() => {});
+
+    setTimeout(() => {
+        location.href = url;
+    }, 140);
+}
+
+let chosenDifficulty = localStorage.getItem("mazeDifficulty") || "mudah";
+
+document.querySelectorAll(".card").forEach(card => {
+    if(card.dataset.d === chosenDifficulty){
+        card.classList.add("selected");
+    }
+
+    card.addEventListener("click", () => {
+        document.querySelectorAll(".card").forEach(item => {
+            item.classList.remove("selected");
+        });
+
+        card.classList.add("selected");
+        chosenDifficulty = card.dataset.d;
+        localStorage.setItem("mazeDifficulty", chosenDifficulty);
+
+        const click = document.getElementById("click");
+        click.volume = getVolume();
+        click.currentTime = 0;
+        click.play().catch(() => {});
+    });
+});
+
+localStorage.setItem("mazeDifficulty", chosenDifficulty);
+window.addEventListener("DOMContentLoaded", setupAudio);
+</script>
+
+</body>
+</html>

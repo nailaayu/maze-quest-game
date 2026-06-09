@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pilih Player</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+html,
+body{
+    width:100%;
+    min-height:100%;
+}
+
+body{
+    min-height:100vh;
+    overflow:hidden;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:white;
+    background:#06111f;
+}
+
+/* BACKGROUND */
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:-5;
+    background-image:url("assets/images/background.jpg");
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+    filter:brightness(.82) contrast(1.08) saturate(1.05);
+}
+
+body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:-4;
+    background:linear-gradient(rgba(0,0,0,.15), rgba(0,0,0,.42));
+}
+
+/* BLINK EFFECT */
+
+.blink{
+    position:fixed;
+    width:280px;
+    height:280px;
+    border-radius:50%;
+    filter:blur(70px);
+    opacity:0;
+    pointer-events:none;
+    z-index:-2;
+}
+
+.blink1{
+    top:10%;
+    left:10%;
+    background:rgba(56,189,248,.55);
+    animation:blinkMove 4s infinite;
+}
+
+.blink2{
+    right:10%;
+    bottom:10%;
+    background:rgba(37,99,235,.50);
+    animation:blinkMove 4s infinite 1.5s;
+}
+
+.blink3{
+    left:45%;
+    bottom:18%;
+    background:rgba(255,255,255,.18);
+    animation:blinkMove 4s infinite 3s;
+}
+
+/* MAIN */
+
+.wrapper{
+    width:92%;
+    max-width:900px;
+    text-align:center;
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+}
+
+.title{
+    font-size:clamp(28px,4vw,44px);
+    font-weight:900;
+    letter-spacing:3px;
+    margin-bottom:8px;
+    text-transform:uppercase;
+    text-shadow:
+    0 0 10px rgba(255,255,255,.9),
+    0 0 25px rgba(56,189,248,.9),
+    0 0 45px rgba(37,99,235,.7);
+    animation:titleBlink 1.8s ease-in-out infinite;
+}
+
+.sub{
+    font-size:15px;
+    color:#e0f2fe;
+    margin-bottom:18px;
+    text-shadow:0 0 10px rgba(0,0,0,.7);
+}
+
+/* PLAYER CARDS */
+
+.grid{
+    width:100%;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:20px;
+    margin:0 auto 18px;
+}
+
+.card{
+    min-height:330px;
+    padding:14px;
+    border:2px solid rgba(255,255,255,.20);
+    border-radius:22px;
+    background:rgba(0,0,0,.24);
+    backdrop-filter:blur(7px);
+    cursor:pointer;
+    transition:.2s ease;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.card:hover,
+.card.selected{
+    border-color:#ffd166;
+    box-shadow:
+    0 0 25px rgba(255,209,102,.45),
+    inset 0 0 20px rgba(255,255,255,.05);
+    transform:translateY(-3px);
+}
+
+.card img{
+    width:100%;
+    height:255px;
+    object-fit:contain;
+    object-position:center;
+    padding:8px;
+    border-radius:16px;
+    background:rgba(255,255,255,.10);
+}
+
+.card h3{
+    margin-top:12px;
+    font-size:20px;
+    font-weight:900;
+    letter-spacing:.5px;
+}
+
+/* BUTTONS */
+
+.row{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:18px;
+}
+
+.btn{
+    width:170px;
+    padding:12px 18px;
+    border:none;
+    border-radius:16px;
+    cursor:pointer;
+    background:linear-gradient(135deg, #38bdf8, #2563eb);
+    color:white;
+    font-size:16px;
+    font-weight:900;
+    letter-spacing:2px;
+    box-shadow:
+    0 12px 25px rgba(0,0,0,.35),
+    0 0 18px rgba(56,189,248,.45);
+    transition:.2s ease;
+}
+
+.btn.ghost{
+    background:rgba(255,255,255,.13);
+    border:1px solid rgba(255,255,255,.22);
+}
+
+.btn:hover{
+    transform:translateY(-3px) scale(1.03);
+    filter:brightness(1.15);
+}
+
+.btn:active{
+    transform:scale(.97);
+}
+
+/* ANIMATIONS */
+
+@keyframes blinkMove{
+    0%{
+        opacity:0;
+        transform:scale(.8);
+    }
+
+    50%{
+        opacity:1;
+        transform:scale(1.2);
+    }
+
+    100%{
+        opacity:0;
+        transform:scale(.8);
+    }
+}
+
+@keyframes titleBlink{
+    0%,100%{
+        opacity:1;
+        filter:brightness(1);
+    }
+
+    50%{
+        opacity:.85;
+        filter:brightness(1.25);
+    }
+}
+
+/* MOBILE */
+
+@media(max-width:700px){
+    body{
+        overflow:auto;
+        padding:25px 0;
+    }
+
+    .wrapper{
+        position:relative;
+        top:auto;
+        left:auto;
+        transform:none;
+        margin:auto;
+    }
+
+    .grid{
+        grid-template-columns:1fr;
+    }
+
+    .card{
+        min-height:auto;
+    }
+
+    .card img{
+        height:230px;
+    }
+
+    .row{
+        flex-direction:column;
+        gap:12px;
+    }
+
+    .btn{
+        width:100%;
+        max-width:280px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="blink blink1"></div>
+<div class="blink blink2"></div>
+<div class="blink blink3"></div>
+
+<main class="wrapper">
+
+    <h1 class="title">PILIH PLAYER</h1>
+
+    <div class="grid">
+
+        <div class="card" data-p="player.jpg">
+            <img src="assets/images/player.jpg" alt="Player 1">
+            <h3>Player 1</h3>
+        </div>
+
+        <div class="card" data-p="player2.jpg">
+            <img src="assets/images/player2.jpg" alt="Player 2">
+            <h3>Player 2</h3>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <button class="btn ghost" onclick="clickGo('menu.html')">
+            BACK
+        </button>
+
+        <button class="btn" onclick="clickGo('pilihanlabirin.html')">
+            NEXT
+        </button>
+    </div>
+
+</main>
+
+<audio id="bgm" loop src="assets/audio/backgroundmusic.mp3"></audio>
+<audio id="click" src="assets/audio/kliktombol.mp3"></audio>
+
+<script>
+const VOLUME_KEY = "mazeVolume";
+const MUTED_KEY = "mazeMuted";
+
+function getVolume(){
+    if(localStorage.getItem(MUTED_KEY) === "1"){
+        return 0;
+    }
+
+    return parseFloat(localStorage.getItem(VOLUME_KEY) || "0.75");
+}
+
+function setupAudio(){
+    const bgm = document.getElementById("bgm");
+    const click = document.getElementById("click");
+
+    bgm.volume = getVolume();
+    click.volume = getVolume();
+
+    document.addEventListener("pointerdown", () => {
+        bgm.play().catch(() => {});
+    }, {once:true});
+}
+
+function clickGo(url){
+    const click = document.getElementById("click");
+
+    click.currentTime = 0;
+    click.play().catch(() => {});
+
+    setTimeout(() => {
+        location.href = url;
+    }, 150);
+}
+
+let chosen = localStorage.getItem("mazePlayer") || "player.jpg";
+
+document.querySelectorAll(".card").forEach(card => {
+    if(card.dataset.p === chosen){
+        card.classList.add("selected");
+    }
+
+    card.addEventListener("click", () => {
+        document.querySelectorAll(".card").forEach(item => {
+            item.classList.remove("selected");
+        });
+
+        card.classList.add("selected");
+
+        chosen = card.dataset.p;
+        localStorage.setItem("mazePlayer", chosen);
+
+        const click = document.getElementById("click");
+        click.currentTime = 0;
+        click.play().catch(() => {});
+    });
+});
+
+localStorage.setItem("mazePlayer", chosen);
+
+window.addEventListener("DOMContentLoaded", setupAudio);
+</script>
+
+</body>
+</html>

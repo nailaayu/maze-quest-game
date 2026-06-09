@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>3D Maze Quest Pro Engine</title>
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    overflow: hidden;
+    background: url("assets/images/background.jpg") center bottom/cover no-repeat fixed;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    user-select: none;
+}
+#gameCanvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; z-index: 2; }
+.hud { position: fixed; top: 20px; left: 20px; z-index: 10; display: flex; gap: 12px; }
+.badge {
+    padding: 12px 24px; border-radius: 12px; background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.2); color: #f8fafc; font-size: 15px;
+    font-weight: 700; letter-spacing: 0.5px; backdrop-filter: blur(8px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+#scoreText {
+    color: #fbbf24; border-color: rgba(251, 191, 36, 0.5); background: rgba(251, 191, 36, 0.15);
+}
+</style>
+</head>
+<body>
+
+<canvas id="gameCanvas"></canvas>
+
+<div class="hud">
+    <div class="badge">⌨️ WASD / ARROW UNTUK JALAN</div>
+    <div class="badge" id="scoreText">🪙 COIN 0 / 10</div>
+</div>
+
+<audio id="gameMusic" loop src="assets/audio/gameplaymusic.mp3"></audio>
+<audio id="runSound" loop src="assets/audio/musiklari.mp3"></audio>
+<audio id="coinSound" src="assets/audio/kliktombol.mp3"></audio>
+<audio id="winSound" src="assets/audio/victorysound.mp3"></audio>
+<audio id="loseSound" src="assets/audio/gameoversound.mp3"></audio>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script src="game.js"></script>
+
+</body>
+</html>

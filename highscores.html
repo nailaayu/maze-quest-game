@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>3D Maze Quest - High Scores</title>
+    <style>
+        :root {
+            --gold: #ffd166;
+            --blue: #38bdf8;
+            --glass: rgba(6, 14, 28, 0.75);
+            --line: rgba(255, 255, 255, 0.18);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { min-height: 100%; font-family: 'Segoe UI', Inter, system-ui, sans-serif; color: #fff; }
+        body { 
+            background: #06111f url('assets/images/background.jpg') center/cover fixed no-repeat; 
+            display: grid; 
+            place-items: center; 
+            overflow: hidden; 
+        }
+        body:before {
+            content: ''; position: fixed; inset: 0; 
+            background: radial-gradient(circle at 50% 35%, rgba(56, 189, 248, 0.12), rgba(0,0,0,0.8) 75%), linear-gradient(120deg, rgba(2,6,23,.35), rgba(0,0,0,.45)); 
+            z-index: -1;
+        }
+        .panel { 
+            width: min(92vw, 440px); 
+            padding: 35px 25px; 
+            border: 1px solid var(--line); 
+            border-radius: 24px; 
+            background: var(--glass); 
+            backdrop-filter: blur(14px); 
+            -webkit-backdrop-filter: blur(14px);
+            box-shadow: 0 25px 70px rgba(0,0,0,.6); 
+        }
+        .title { 
+            text-align: center; 
+            margin-bottom: 25px; 
+            font-size: 32px; 
+            font-weight: 900; 
+            letter-spacing: 1px; 
+            text-shadow: 0 0 25px rgba(56, 189, 248, 0.8); 
+        }
+        .list { 
+            font-size: 16px; 
+            line-height: 1.8; 
+            max-height: 260px; 
+            overflow-y: auto;
+            margin-bottom: 25px;
+            padding-right: 5px;
+        }
+        .score-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.06);
+            margin-bottom: 8px;
+            padding: 10px 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .score-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .badge { 
+            display: inline-block; 
+            padding: 4px 10px; 
+            border-radius: 8px; 
+            background: rgba(56, 189, 248, 0.2); 
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            font-weight: bold;
+            font-size: 13px;
+        }
+        .coin-count {
+            color: var(--gold);
+            font-weight: 800;
+        }
+        .date-text {
+            font-size: 13px;
+            color: #94a3b8;
+        }
+        .no-score {
+            text-align: center;
+            color: #94a3b8;
+            padding: 20px 0;
+            font-style: italic;
+        }
+        .btn { 
+            display: block; 
+            width: 100%; 
+            padding: 15px 20px; 
+            border: 0; 
+            border-radius: 14px; 
+            background: linear-gradient(135deg, #0ea5e9, #2563eb); 
+            color: white; 
+            font-size: 16px; 
+            font-weight: 900; 
+            letter-spacing: 0.5px; 
+            cursor: pointer; 
+            box-shadow: 0 10px 25px rgba(0,0,0,.35); 
+            transition: .18s ease; 
+        }
+        .btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
+        .list::-webkit-scrollbar { width: 5px; }
+        .list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<main class="panel">
+    <h1 class="title">HIGH SCORES</h1>
+    <div class="list" id="scores"></div>
+    <button class="btn" onclick="clickGo('menu.html')">BACK TO MENU</button>
+</main>
+
+<audio id="bgm" loop preload="auto" src="assets/audio/backgroundmusic.mp3"></audio>
+<audio id="click" preload="auto" src="assets/audio/kliktombol.mp3"></audio>
+
+<script>
+    const VOLUME_KEY = 'mazeVolume';
+    function getVol() { return parseFloat(localStorage.getItem(VOLUME_KEY) || '0.75'); }
+    
+    function setupAudio() {
+        const bg = document.getElementById('bgm'); 
+        const click = document.getElementById('click'); 
+        
+        bg.volume = getVol();
+        click.volume = getVol();
+
+        const startMusic = () => {
+            if(bg) bg.play().catch(() => {});
+            document.removeEventListener("pointerdown", startMusic);
+            document.removeEventListener("keydown", startMusic);
+        };
+        document.addEventListener("pointerdown", startMusic);
+        document.addEventListener("keydown", startMusic);
+    }
+    
+    function clickGo(url) {
+        const c = document.getElementById('click'); 
+        if (c) { c.volume = getVol(); c.currentTime = 0; c.play().catch(() => {}) } 
+        setTimeout(() => location.href = url, 130)
+    }
+    
+    window.addEventListener('DOMContentLoaded', setupAudio);
+
+    const arr = JSON.parse(localStorage.getItem('mazeScores') || '[]');
+    const scoresContainer = document.getElementById('scores');
+    
+    if (arr.length > 0) {
+        scoresContainer.innerHTML = arr.slice(0, 5).map((s, i) => `
+            <div class="score-item">
+                <div class="score-info">
+                    <span class="badge">#${i + 1}</span>
+                    <span>Mode: <b>${s.difficulty}</b></span>
+                </div>
+                <div style="text-align: right">
+                    <div class="coin-count">🪙 ${s.score} Koin</div>
+                    <div class="date-text">${s.date}</div>
+                </div>
+            </div>
+        `).join('');
+    } else {
+        scoresContainer.innerHTML = '<div class="no-score">Belum ada catatan koin. Yuk mainkan game dulu!</div>';
+    }
+</script>
+</body>
+</html>
