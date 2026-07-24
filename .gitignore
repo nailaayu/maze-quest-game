@@ -1,23 +1,26 @@
-# File konfigurasi rahasia
+# Environment files
 .env
 .env.*
 !.env.example
 
-# Dependency jika nanti menggunakan npm
+# Node.js dependencies
 node_modules/
 
-# Hasil build
+# Build output
 dist/
+build/
 
-# Log
+# Log files
 *.log
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Editor
+# Editor settings
 .vscode/
 .idea/
 
-# File bawaan sistem
+# Operating system files
 .DS_Store
 Thumbs.db
 desktop.ini
